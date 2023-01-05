@@ -1,5 +1,5 @@
 data = read.csv("C:/Users/Mario/Downloads/csv_analisi_giocatori.csv")
-colnames(data)[colnames(data)=="ï..Nome"] <- "Nome"
+colnames(data)[colnames(data)=="Ã¯..Nome"] <- "Nome"
 
 summary(data)
 dim(data)
@@ -68,17 +68,6 @@ newdata = data[5:53]
 library(dbplyr)
 distinct(newdata,code)
 print(y)
-#group_sum = aggregate(gruppoZenit[ ,4:49],by = list(gruppoZenit$code), FUN = sum)
-#group_sum
-#sum(group_sum$Tiri)
-#group_sum = aggregate(gruppoZenit[ ,4:49],by = list(gruppoZenit$code, gruppoZenit$Squadra), FUN = sum)
-#group_sum
-
-#group_sum <- group_sum[-1,]
-#group_sum$nome=substr(group_sum$Group.1,start = 10,stop = 30)
-#summary(group_sum)
-
-#Analisi esplorativa preliminare
 
 #elimina riga
 newdata = newdata[-13,]
@@ -93,10 +82,6 @@ Zenit = aggregate(gruppoZenit[ ,4:49],by = list(gruppoZenit$code, gruppoZenit$Sq
 library(stringr)
 Zenit$Nome = str_extract(Zenit$Group.1,"\\w+$")
 Zenit1 = subset(Zenit,select = c(Nome,Group.2,Assist,Tiri,Tiro_in_porta,Palloni_persi,Palloni_conquistati,Palloni_conquistati_meta_campo_avversaria,Palloni_persi_meta_campo_avversaria,Gol,Contrasti_Azioni_riuscite,Contrasti_Azioni_non_riuscite,Duelli_aerei_vinto,Duelli_aerei_perso,Dribbling,Passaggi_riusciti,Passaggi_imprecisi,Intercettazioni,Rigore,Sviluppi_offensivi))
-#posizione record
-#which(gruppoZenit$code == "Leonardo Bonucci")
-#Creazione data per Juve 
-#lista nomi giocatori
 Juve = aggregate(gruppoJuve[ ,4:49],by = list(gruppoJuve$code, gruppoJuve$Squadra), FUN = sum)
 library(stringr)
 Juve$Nome = str_extract(Juve$Group.1,"\\w+$")
@@ -105,16 +90,16 @@ juve1$MP = c(93,85,93,93,85,80,93,7,12,80,93,7,12,93,93)
 
 #Palloni conquistati di squadra [TePc]
 TePc = sum(juve1$Palloni_conquistati)
-#Palloni conquistati metà campo avversaria di squadra [TePcma];
+#Palloni conquistati metÃ  campo avversaria di squadra [TePcma];
 TePcma = sum(juve1$Palloni_conquistati_meta_campo_avversaria)
 TePcma
 #Palloni conquistati dallo Zenit[TeOppPc];
 OppPc = sum(Zenit1$Palloni_conquistati)
-#Palloni conquistati metà campo avversaria dallo Zenit[TeOppPc];
+#Palloni conquistati metÃ  campo avversaria dallo Zenit[TeOppPc];
 OppPcma = sum(Zenit1$Palloni_conquistati_meta_campo_avversaria)
-#Palloni conquistati propria metà campo Zenit [OppPcmp]
+#Palloni conquistati propria metÃ  campo Zenit [OppPcmp]
 OppPcmp = OppPc - OppPcma
-#Palloni conquistati nella propria metà campo Juve [TePcmp]
+#Palloni conquistati nella propria metÃ  campo Juve [TePcmp]
 TePcmp = TePc - TePcma
 juve1$Palloni_conquistati_propria_meta_campo = juve1$Palloni_conquistati - juve1$Palloni_conquistati_meta_campo_avversaria
 #Palloni persi Juve[TePp]
@@ -128,8 +113,7 @@ Poss = (Poss+OppPoss)/2
 #Possessi Zenit
 Zenit1$Poss = Zenit1$Tiri+(0.44*Zenit1$Tiro_in_porta)-Zenit1$Palloni_conquistati_meta_campo_avversaria+Zenit1$Palloni_persi
 OppPoss = sum(Zenit1$Poss)
-#Pace per confronti di ritmo di gioco (se uso TeMP allora moltiplicare 93minuti effettivamente
-#giocati * giocatori in campo 11) 
+#Pace per confronti di ritmo di gioco (se uso TeMP allora moltiplicare 93minuti effettivamente giocati * giocatori in campo 11) 
 Pace = (Poss/TeMP)*1023
 #Goal Juve
 TeGol = sum(juve1$Gol)
@@ -137,7 +121,7 @@ TeGol = sum(juve1$Gol)
 for (i in 1:15){
   #Palloni conquistati meta campo avversaria
   juve1$Pcmaper = ((juve1$Palloni_conquistati_meta_campo_avversaria)/((TePcma+OppPcmp)*((11*juve1$MP)/(TeMP))))*100
-  #Palloni conquistati propria metà campo 
+  #Palloni conquistati propria metÃ  campo 
   juve1$Pcpmper = ((juve1$Palloni_conquistati_propria_meta_campo)/((TePcmp+OppPcma)*((11*juve1$MP)/(TeMP))))*100
   #Totale Palloni conquistati
   juve1$Pcper = ((juve1$Palloni_conquistati)/((TePc+OppPc)*((11*juve1$MP)/(TeMP))))*100
@@ -171,7 +155,7 @@ g + geom_bar(stat="identity", width = 0.5, fill="tomato2") +
   theme(axis.text.x = element_text(angle=65, vjust=0.6))
 
 #Confronto percentuale tiri dello Zenit con i palloni conquistati dalla Juve
-#All'aumentare dei palloni conquistati dalla Juve nella propria metà campo diminuisce 
+#All'aumentare dei palloni conquistati dalla Juve nella propria metÃ  campo diminuisce 
 #la percentuale dei tiri da parte dello Zenit
 #Percentuale tiri in porta zenit
 Tiriper = sum(Zenit1$Tiri)
@@ -187,7 +171,7 @@ confronto = data.frame(zenit_tiri_per,juve_palloni_conquistati_propria_meta_camp
 theme_set(theme_bw())  # pre-set the bw theme.
 g <- ggplot(confronto, aes(juve_palloni_conquistati_propria_meta_campo, zenit_tiri_per))
 g + geom_jitter(width = .5, size=1) +
-  labs(subtitle="%Palloni conquistati propria metà campo Juve vs %Tiri Zenit", 
+  labs(subtitle="%Palloni conquistati propria metÃ  campo Juve vs %Tiri Zenit", 
        y="Tiri% Zenit", 
        x="Palloni conquistati%", 
        title="Confronto delle due squadre")
@@ -195,7 +179,7 @@ g + geom_jitter(width = .5, size=1) +
 #Confronto fra palloni conquistati juve e sviluppi offensivi Zenit
 #La juve complessivamente ha concesso poco come possiamo vedere nella fascia x[0,10] e y[3,9]
 #nella quale si svolgono la maggior parte delle azioni offensive dello Zenit, 
-#ma comunque la Juve riesce a conquistare più palloni rispetto alle azioni offensive 
+#ma comunque la Juve riesce a conquistare piÃ¹ palloni rispetto alle azioni offensive 
 OppSvoff = sum(Zenit1$Sviluppi_offensivi)
 for (i in 1:16){
   Zenit1$OppSvoff= ((Zenit1$Sviluppi_offensivi)/OppSvoff)*100
@@ -229,7 +213,7 @@ g + geom_bar(stat="identity", width = 0.5, fill="tomato2") +
   theme(axis.text.x = element_text(angle=65, vjust=0.6))
 
 #Confronto Intercettazioni Juve con Palloni conquistati Zenit
-#Ancora una volta la juve dimostra superiorità sulle intercettazioni rispetto la percentuale
+#Ancora una volta la juve dimostra superioritÃ  sulle intercettazioni rispetto la percentuale
 #di palloni conquistati dallo Zenit
 confronto2 = data.frame(Zenit1$Palloni_conquistati,juve1$Intercettazioniper)
 head(confronto2)
@@ -240,20 +224,3 @@ g + geom_jitter(width = .5, size=1) +
        y="%Palloni conquistati Zenit", 
        x="Intercettazioni%", 
        title="Confronto delle due squadre")
-
-###############################################Grafico correlazione##############  
-devtools::install_github("kassambara/ggcorrplot")
-library(ggcorrplot)
-
-# Correlation matrix
-corr <- round(cor(Juve), 3)
-# Plot
-ggcorrplot(corr, hc.order = TRUE, 
-           type = "lower", 
-           lab = TRUE, 
-           lab_size = 3, 
-           method="circle", 
-           colors = c("tomato2", "white", "springgreen3"), 
-           title="Correlogram of mtcars", 
-           ggtheme=theme_bw)
-##################################################################################
