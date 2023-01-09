@@ -1,4 +1,4 @@
-data = read.csv("C:/Users/Mario/Downloads/csv_analisi_giocatori.csv")
+data = read.csv("csv_analisi_giocatori.csv")
 colnames(data)[colnames(data)=="ï..Nome"] <- "Nome"
 
 summary(data)
